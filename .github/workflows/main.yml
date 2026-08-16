@@ -1,0 +1,36 @@
+name: Compilar OficiosYA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Descomprimir proyecto
+        run: |
+          unzip -o OficiosYA.zip -d proyecto
+          echo "Contenido:"
+          find proyecto -maxdepth 3 -type f | head -100
+
+      - name: Compilar APK
+        working-directory: proyecto/OficiosYA
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: OficiosYA-APK
+          path: proyecto/OficiosYA/app/build/outputs/apk/debug/app-debug.apk
