@@ -17,17 +17,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Instalar Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
       - name: Descomprimir proyecto
         run: |
           unzip -o OficiosYA.zip -d proyecto
-          echo "Contenido:"
-          find proyecto -maxdepth 3 -type f | head -100
 
       - name: Compilar APK
         working-directory: proyecto/OficiosYA
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          gradle assembleDebug
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
